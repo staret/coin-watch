@@ -7,6 +7,7 @@
    [coin-watch.config :as config]
    ))
 
+(enable-console-print!)
 
 (defn dev-setup []
   (when config/debug?
