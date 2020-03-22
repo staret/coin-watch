@@ -11,21 +11,17 @@
 
 (def standard-interceptors [debug])
 
-(def movement-interceptors [(path :sorted-expenses)])
-
 (defn allocate-next-id
   [expenses]
-  (println expenses)
-  ((fnil inc 0) (last (keys expenses))))
+  ((fnil inc 0) (get (first expenses) :id)))
 
 (reg-event-db
  :add-movement
- [standard-interceptors movement-interceptors]
- (fn [expenses [_ amount]]
-   (let [id (allocate-next-id expenses)]
-       (assoc expenses id {:id id
-                           :name "generic"
-                           :amount amount
-                           :note "generic note"
-                           :purchase-date "2020-01-01 00:00:00"
-                           :creation-date (.getTime (js/Date.))}))))
+ [standard-interceptors]
+ (fn [db [_ amount]]
+   (update db :expenses conj {:id (allocate-next-id (get db :expenses))
+                              :name "generic"
+                              :amount amount
+                              :note "generic note"
+                              :purchase-date "2020-01-01 00:00:00"
+                              :creation-date (.getTime (js/Date.))})))

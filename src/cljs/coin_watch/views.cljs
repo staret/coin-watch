@@ -26,9 +26,9 @@
 
 (defn movement-item
   []
-  (fn [{:keys [name amount purchase-date]}]
+  (fn [{:keys [id name amount purchase-date]}]
   [:div.view
-   [:label name]
+   [:label str "id " id " - " name]
    [:p amount]
    [:p str "on " purchase-date]
    [:button.edit "edit-me"]]))
