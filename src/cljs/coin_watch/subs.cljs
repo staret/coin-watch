@@ -24,3 +24,8 @@
  :<- [:expenses]
  (fn [expenses _]
    (count expenses)))
+
+(reg-sub
+ :names
+ (fn [db _]
+   (:names db)))

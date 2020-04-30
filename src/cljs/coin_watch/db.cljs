@@ -17,4 +17,5 @@
                 :amount 30.50
                 :note "tasty"
                 :purchase-date "2020-01-01 00:00:00"
-                :creation-date "2020-01-01 00:00:00"})})
+                :creation-date "2020-01-01 00:00:00"})
+   :names '("first")})

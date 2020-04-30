@@ -25,3 +25,9 @@
                               :note "generic note"
                               :purchase-date "2020-01-01 00:00:00"
                               :creation-date (.getTime (js/Date.))})))
+
+(reg-event-db
+ :add-name
+ [standard-interceptors]
+ (fn [db [_ name]]
+   (update db :names conj name)))

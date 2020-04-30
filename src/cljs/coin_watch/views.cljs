@@ -1,3 +1,4 @@
+
 (ns coin-watch.views
   (:require
    [reagent.core :as reagent]
@@ -14,6 +15,25 @@
                 (stop))]
     (fn [props]
       [:input (merge (dissoc props :on-save :on-stop :amount)
+                     {:type "text"
+                      :value @val
+                      :auto-focus true
+                      :on-blur save
+                      :on-change #(reset! val (-> % .-target .-value))
+                      :on-key-down #(case (.-wich %)
+                                      13 (save)
+                                      27 (stop)
+                                      nil)})])))
+
+(defn name-input [{:keys [name on-save on-stop]}]
+  (let [val (reagent/atom name)
+        stop #(do (reset! val "")
+                  (when on-stop (on-stop)))
+        save #(let [v (-> @val str str/trim)]
+                (on-save v)
+                (stop))]
+    (fn [props]
+      [:input (merge (dissoc props :on-save :on-stop :name)
                      {:type "text"
                       :value @val
                       :auto-focus true
@@ -41,6 +61,13 @@
       (for [movement movements]
         ^{:key (:id movement)} [movement-item movement])]]))
 
+(defn name-list
+  []
+  (let [names @(subscribe [:names])]
+    [:div
+     (for [name names]
+       [:p (str name)])]))
+
 (defn coin-status
   []
   [:p "Spent: $xxx.xx"])
@@ -55,6 +82,16 @@
       :on-save #(when (seq %)
                   (dispatch [:add-movement %]))}]]])
 
+(defn movement-name
+  []
+  [:div
+   [:div
+    [name-input
+     {:id "new-name"
+      :placeholder "Type a name"
+      :on-save #(when (seq %)
+                  (dispatch [:add-name %]))}]]])
+
 (defn main-panel
   []
   (let [name @(subscribe [:name])]
@@ -65,4 +102,6 @@
      [coin-status]
      (when (seq @(subscribe [:sorted-expenses]))
        [movement-list])
-     [movement-entry]]))
+     [movement-entry]
+     [movement-name]
+     [name-list]]))
